@@ -208,47 +208,47 @@ session_start();
 
         validateForms();
 
-        fetch('get_products.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const productSelect = $('#product');
-                    data.products.forEach(product => {
-                        const option = $('<option></option>').val(product.id).text(product.nazwa);
-                        productSelect.append(option);
-                    });
-                } else {
-                    alert('Wystąpił błąd przy pobieraniu produktów.');
-                }
-            });
+        // fetch('get_products.php')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             const productSelect = $('#product');
+        //             data.products.forEach(product => {
+        //                 const option = $('<option></option>').val(product.id).text(product.nazwa);
+        //                 productSelect.append(option);
+        //             });
+        //         } else {
+        //             alert('Wystąpił błąd przy pobieraniu produktów.');
+        //         }
+        //     });
 
-        fetch('get_products.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const productSelect = $('#product-select');
-                    data.products.forEach(product => {
-                        const option = $('<option></option>').val(product.id).text(product.nazwa);
-                        productSelect.append(option);
-                    });
-                } else {
-                    alert('Wystąpił błąd przy pobieraniu produktów.');
-                }
-            });
+        // fetch('get_products.php')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             const productSelect = $('#product-select');
+        //             data.products.forEach(product => {
+        //                 const option = $('<option></option>').val(product.id).text(product.nazwa);
+        //                 productSelect.append(option);
+        //             });
+        //         } else {
+        //             alert('Wystąpił błąd przy pobieraniu produktów.');
+        //         }
+        //     });
 
-        fetch('get_products.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const productSelect = $('#product-select-visibility');
-                    data.products.forEach(product => {
-                        const option = $('<option></option>').val(product.id).text(product.nazwa);
-                        productSelect.append(option);
-                    });
-                } else {
-                    alert('Wystąpił błąd przy pobieraniu produktów.');
-                }
-            });
+        // fetch('get_products.php')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             const productSelect = $('#product-select-visibility');
+        //             data.products.forEach(product => {
+        //                 const option = $('<option></option>').val(product.id).text(product.nazwa);
+        //                 productSelect.append(option);
+        //             });
+        //         } else {
+        //             alert('Wystąpił błąd przy pobieraniu produktów.');
+        //         }
+        //     });
 
         $('#product-survey').on('submit', function(event) {
             event.preventDefault();

@@ -1,8 +1,8 @@
 <?php
-$host = 's1.ct8.pl';
-$dbname = 'm44406_oceny_produktow';
-$username = 'm44406_bambo';
-$password = 'Jacekswider!@3';
+$host = 'localhost';
+$dbname = 'oceny_produktow';
+$username = 'root';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
