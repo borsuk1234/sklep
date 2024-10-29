@@ -48,7 +48,7 @@ session_start();
                 <div class="form-group">
                     <label for="product-select">Wybierz produkt:</label>
                     <select class="form-control" id="product-select">
-                        <!-- Opcje będą dodawane dynamicznie za pomocą JavaScript -->
+                      
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Wyświetl odpowiedzi</button>
@@ -64,19 +64,19 @@ session_start();
                         </tr>
                     </thead>
                     <tbody id="responses-body">
-                        <!-- Tutaj zostaną wstawione odpowiedzi z bazy danych -->
+                        
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="my-4">
             <h2>Ustaw widoczność wyników ankiety</h2>
-            <!-- Formularz do ustawiania widoczności wyników ankiety -->
+          
             <form id="update-visibility-form">
                 <div class="form-group">
                     <label for="product-select-visibility">Wybierz produkt:</label>
                     <select id="product-select-visibility" name="product_id" class="form-control" required>
-                        <!-- Opcje wypełniane dynamicznie przez JavaScript -->
+                       
                     </select>
                 </div>
                 <div class="form-group">
