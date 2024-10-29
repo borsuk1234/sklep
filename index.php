@@ -5,7 +5,7 @@ session_start();
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8"> //ssadawdawdawdawdasd
+    <meta charset="UTF-8">
     <title></title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
