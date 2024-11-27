@@ -75,12 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user-edit'])) {
             <input type="text" name="phone" id="customer-phone">
         </label>
         <label>Notatki:
-            <textarea name="notes" id="customer-notes"></textarea>
+            <textarea style="width: 200px; height: 30px; resize: none;" name="notes" id="customer-notes"></textarea>
         </label>
         <button type="submit" name="customer-edit" id="form-submit">Zaktualizuj klienta</button>
     </form>
 
-    <table border="1">
+    <table style="margin-top:20px;" border="1">
         <tr>
             <th>ID</th>
             <th>Imię i nazwisko</th>

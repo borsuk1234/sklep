@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label>Nazwa produktu: </label><input style="margin-left: auto;" type="text" name="name" id="name" required><br>          
                     </div>
                     <div style="display: flex; flex-direction: row; gap: 0.5em;">
-                        <label>Opis produktu: </label><textarea style="margin-left: auto;" name="description" id="description" required></textarea><br> 
+                        <label>Opis produktu: </label><textarea style="width: 170px; height: 30px; resize: none; margin-left: auto;" name="description" id="description" required></textarea><br> 
                     </div>
                     <div style="display: flex; flex-direction: row; gap: 0.5em;">
                         <label>Cena: </label><input style="margin-left: auto;" type="number" step="0.01" name="price" id="price" required><br>
