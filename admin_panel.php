@@ -18,6 +18,7 @@ require 'header.php';
     <nav style="display: flex; flex-direction: row; gap: 0.5em;">
         <a href="admin_products.php"><button class="nav-btn">Zarządzanie produktami</button></a>
         <a href="admin_categories.php"><button class="nav-btn">Zarządzanie kategoriami</button></a>
+        <a href="admin_customers.php"><button class="nav-btn">Zarządzanie klientami</button></a>
         <a href="admin_orders.php"><button class="nav-btn">Zarządzanie zamówieniami</button></a>
     </nav>
     </div>

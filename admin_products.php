@@ -10,7 +10,7 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-$products = $pdo->query("SELECT p.id, p.name, p.price, GROUP_CONCAT(c.name SEPARATOR ', ') as categories
+$products = $pdo->query("SELECT p.id, p.name, p.description, p.price, GROUP_CONCAT(c.name SEPARATOR ', ') as categories
                          FROM products p
                          LEFT JOIN product_categories pc ON p.id = pc.product_id
                          LEFT JOIN categories c ON pc.category_id = c.id
@@ -31,10 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($productId) {
                 $stmt = $pdo->prepare("UPDATE products SET name = :name, description = :description, price = :price WHERE id = :id");
                 $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price, 'id' => $productId]);
-
+    
                 $stmt = $pdo->prepare("DELETE FROM product_categories WHERE product_id = :product_id");
                 $stmt->execute(['product_id' => $productId]);
-
+    
                 foreach ($selectedCategories as $categoryId) {
                     $stmt = $pdo->prepare("INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)");
                     $stmt->execute(['product_id' => $productId, 'category_id' => $categoryId]);
@@ -43,14 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("INSERT INTO products (name, description, price) VALUES (:name, :description, :price)");
                 $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price]);
                 $newProductId = $pdo->lastInsertId();
-
+    
                 foreach ($selectedCategories as $categoryId) {
                     $stmt = $pdo->prepare("INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)");
                     $stmt->execute(['product_id' => $newProductId, 'category_id' => $categoryId]);
                 }
             }
-
+    
             $pdo->commit();
+            $_SESSION['success_message'] = "Produkt został poprawnie zapisany.";
             header("Location: admin_products.php");
             exit;
         } catch (Exception $e) {
@@ -97,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </div>
             </div>
-            <button type="submit" style="width: auto; margin: 0 auto; padding: 0.5em 2em; border-radius: 0.5em; background-color: #007BFF;">Zapisz</button>
+            <button type="submit" style="width: auto; margin: 0 auto; padding: 0.5em 2em; border-radius: 0.5em; background-color: #007BFF; color: white">Zapisz</button>
         </form>
 
         <h2>Lista produktów</h2>
@@ -105,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <tr>
                 <th>ID</th>
                 <th>Nazwa</th>
+                <th>Opis produktu</th>
                 <th>Cena</th>
                 <th>Kategorie</th>
                 <th>Akcje</th>
@@ -113,42 +115,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <tr>
                 <td><?= $product['id'] ?></td>
                 <td><?= htmlspecialchars($product['name']) ?></td>
+                <td><?= nl2br(htmlspecialchars($product['description'])) ?></td>
                 <td><?= number_format($product['price'], 2) ?> PLN</td>
                 <td><?= htmlspecialchars($product['categories']) ?></td>
                 <td>
                     <button onclick="editProduct(<?= $product['id'] ?>)">Edytuj</button>
-                    <a href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</a>
+                    <button style="background-color:red; border-radius: 0.25em;" href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</button>
                 </td>
             </tr>
             <?php endforeach; ?>
         </table>
 
-        <a href="admin_panel.php">Powrót do panelu</a>
+        <a href="admin_panel.php"><button class="nav-btn">Powrót do panelu</button></a>
     </div>
 
-    <!-- JavaScript should be placed here, after the form and the rest of the HTML content -->
     <script>
-        function editProduct(id) {
-            console.log("<?= $product[0]['categories'] ?>")
-            console.log(id)
-            document.getElementById('product_id').value = id;
-            document.getElementById('name').value = <?= json_encode($product[0]['name']) ?>;
-            document.getElementById('description').value = <?= json_encode($product[0]['description']) ?>;
-            document.getElementById('price').value = <?= json_encode($product[0]['price']) ?>;
+      function editProduct(id) {
+    const productData = <?= json_encode($products); ?>;
+    const productCategoriesData = <?= json_encode($categories); ?>;
 
-            // Reset all category checkboxes
-            document.querySelectorAll('.category-checkbox').forEach(checkbox => checkbox.checked = false);
+    const product = productData.find(p => p.id === id);
 
-            // Assuming categories is a comma-separated string
-            let categories = <?= json_encode($product[0]['categories']) ?>;
-            categories.split(', ').forEach(categoryName => {
-                document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-                    if (checkbox.value === categoryName.trim()) {
-                        checkbox.checked = true;
-                    }
-                });
+    if (product) {
+        document.getElementById('product_id').value = product.id;
+        document.getElementById('name').value = product.name;
+        document.getElementById('description').value = product.description;
+        document.getElementById('price').value = product.price;
+
+        document.querySelectorAll('.category-checkbox').forEach(checkbox => checkbox.checked = false);
+
+        const productCategories = product.categories ? product.categories.split(', ') : [];
+        productCategories.forEach(categoryName => {
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                const category = productCategoriesData.find(c => c.id == checkbox.value);
+                if (category && category.name === categoryName.trim()) {
+                    checkbox.checked = true;
+                }
             });
-        }
+        });
+    }
+}
+console.log(<?= json_encode($products, JSON_PRETTY_PRINT); ?>);
+
     </script>
 </body>
 </html>
