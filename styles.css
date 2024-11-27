@@ -41,6 +41,16 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
+.nav-btn {
+    background-color: #0056b3;
+    color: white;
+    padding: 1em 2em;
+}
+
+.nav-btn:hover {
+    background-color: #007BFF;
+}
+
 /* Główny układ */
 main {
     display: flex;
