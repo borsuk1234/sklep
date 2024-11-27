@@ -122,6 +122,8 @@ section h2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .product-item {

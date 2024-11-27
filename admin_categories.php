@@ -2,14 +2,6 @@
 require 'db_connection.php';
 require 'header.php';
 
-if (isset($_GET['delete'])) {
-    $productId = intval($_GET['delete']);
-    $stmt = $pdo->prepare("DELETE FROM products WHERE id = :id");
-    $stmt->execute(['id' => $productId]);
-    header("Location: admin_categories.php");
-    exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $categoryId = isset($_POST['id']) ? intval($_POST['id']) : null;
@@ -52,6 +44,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC
 <body>
 <section>
     <h1>Zarządzanie kategoriami</h1>
+
     <form method="POST">
         <input type="hidden" name="id" id="category-id">
         <label>Nazwa kategorii: 
@@ -61,6 +54,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC
     </form>
 
     <h2 style="margin-top: 20px;">Lista kategorii</h2>
+
     <table border="1">
         <tr>
             <th>ID</th>
@@ -72,21 +66,26 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC
             <td><?= $category['id'] ?></td>
             <td><?= htmlspecialchars($category['name']) ?></td>
             <td>
-                <button onclick="editCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['name']) ?>')">Edytuj</button>
-                <button style="background-color:red; border-radius: 0.25em;" href="admin_categories.php?delete=<?= $category['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć tę kategorię?')">Usuń</button>
+                <button onclick="editCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['name'], ENT_QUOTES) ?>')">Edytuj</button>
+                
+                <button href="admin_categories.php?delete=<?= $category['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć tę kategorię?')" 
+                    style="background-color: red; border-radius: 0.25em;">Usuń</button>
             </td>
         </tr>
         <?php endforeach; ?>
     </table>
-    <a style="margin-top:20px;"href="admin_panel.php"><button class="nav-btn">Powrót do panelu</button></a>
-    </section>
+
+    <a style="margin-top: 20px;" href="admin_panel.php">
+        <button class="nav-btn">Powrót do panelu</button>
+    </a>
+</section>
 
 <script>
     function editCategory(id, name) {
         document.getElementById('category-id').value = id;
         document.getElementById('category-name').value = name;
 
-        document.getElementById('form-submit').textContent = 'Zaktualizuj kategorie';
+        document.getElementById('form-submit').textContent = 'Zaktualizuj kategorię';
     }
 </script>
 
