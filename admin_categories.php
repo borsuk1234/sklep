@@ -1,6 +1,6 @@
 <?php
 require 'db_connection.php';
-session_start();
+require 'header.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
@@ -41,3 +41,4 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC
     <a href="admin_panel.php">Powrót do panelu</a>
 </body>
 </html>
+<?php require 'footer.php'; ?>
