@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <td><?= htmlspecialchars($product['categories']) ?></td>
                 <td>
                     <button onclick="editProduct(<?= $product['id'] ?>)">Edytuj</button>
-                    <button style="background-color:red; border-radius: 0.25em;" href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</button>
+                    <a style="background-color:red; border-radius: 0.25em;" href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</a>
                 </td>
             </tr>
             <?php endforeach; ?>

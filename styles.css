@@ -122,8 +122,6 @@ section h2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
-    width: 100%;
-    margin: 0 auto;
 }
 
 .product-item {
@@ -205,14 +203,14 @@ th, td {
     border: 1px solid #ddd;
 }
 
-td:nth-child(3) {
+td:nth-child(3) { /* Kolumna opisu */
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-td:nth-child(3):hover {
+td:nth-child(3):hover { /* Pełny opis przy najechaniu */
     white-space: normal;
     overflow: visible;
 }

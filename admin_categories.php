@@ -68,8 +68,8 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll(PDO::FETCH_ASSOC
             <td>
                 <button onclick="editCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['name'], ENT_QUOTES) ?>')">Edytuj</button>
                 
-                <button href="admin_categories.php?delete=<?= $category['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć tę kategorię?')" 
-                    style="background-color: red; border-radius: 0.25em;">Usuń</button>
+                <a href="admin_categories.php?delete=<?= $category['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć tę kategorię?')" 
+                    style="background-color: red; border-radius: 0.25em;">Usuń</a>
             </td>
         </tr>
         <?php endforeach; ?>
