@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lis 27, 2024 at 09:06 PM
+-- Generation Time: Lis 28, 2024 at 02:33 PM
 -- Wersja serwera: 10.4.28-MariaDB
 -- Wersja PHP: 8.2.4
 
@@ -70,6 +70,13 @@ CREATE TABLE `orders` (
   `status` enum('new','processing','completed','cancelled') DEFAULT 'new',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `customer_id`, `products`, `total_price`, `status`, `created_at`) VALUES
+(1, 1, 'sadsadsad', 242.00, 'completed', '2024-11-28 13:27:53');
 
 -- --------------------------------------------------------
 
@@ -167,7 +174,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (1, 'admin', '$2y$10$qNm9UmX5qkOTMNIztFgw8.f6lQttfdhjO2FKTKyWs0.Qq7GQE6Ii.', 'admin'),
 (2, 'dawud', '$2y$10$1uRMCsyrvOd6votSvfIY..F3/0FvpbeXM5sn777qmzD31zHw0/fR.', 'user'),
 (3, 'cos', '$2y$10$eHMa60LchVheV8XQQbkfHufySdkAd6T6TPBYm.AvDmFcxy5oIgR2S', 'user'),
-(6, 'ktos', '$2y$10$47nn013UMdcbmMDC6X7ypeBDTTXHV5CKXdzOlw7mTiXY/xFmwiDHK', 'user');
+(6, 'ktos', '$2y$10$47nn013UMdcbmMDC6X7ypeBDTTXHV5CKXdzOlw7mTiXY/xFmwiDHK', 'user'),
+(7, 'natan', '$2y$10$ll60xTFMIWcK4GaJqpOI4ORib4RN9UbyO9ZI/hk2AkPBtgu8nVofe', 'user');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -248,7 +256,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `password_reset_tokens`
@@ -278,7 +286,7 @@ ALTER TABLE `product_parameters`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
