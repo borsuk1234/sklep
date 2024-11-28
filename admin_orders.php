@@ -1,9 +1,52 @@
 <?php
-$orders = $pdo->query("SELECT * FROM orders")->fetchAll(PDO::FETCH_ASSOC);
+require 'db_connection.php';
+require 'header.php';
+
+if (!(isset($_SESSION['is_admin']) && $_SESSION['is_admin'])) {
+    header('Location: login.php');
+    exit();
+}
+
+// Handle the form submission for updating order status
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['status'])) {
+    // Prepare and execute the update statement
+    $stmt = $pdo->prepare("UPDATE orders SET status = :status WHERE id = :order_id");
+    $stmt->bindParam(':status', $_POST['status'], PDO::PARAM_STR);
+    $stmt->bindParam(':order_id', $_POST['order_id'], PDO::PARAM_INT);
+
+    if ($stmt->execute()) {
+        echo '<p>Status zamówienia zaktualizowany pomyślnie!</p>';
+    } else {
+        echo '<p>Błąd aktualizacji statusu zamówienia.</p>';
+    }
+}
+
+// Retrieve orders from the database
+$stmt = $pdo->prepare("SELECT * FROM orders");
+$stmt->execute();
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html>
-<head><title>Zarządzanie zamówieniami</title></head>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarządzanie zamówieniami</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
 <body>
     <h1>Zamówienia</h1>
     <table>
@@ -16,18 +59,18 @@ $orders = $pdo->query("SELECT * FROM orders")->fetchAll(PDO::FETCH_ASSOC);
         </tr>
         <?php foreach ($orders as $order): ?>
         <tr>
-            <td><?= $order['id'] ?></td>
-            <td><?= $order['customer_id'] ?></td>
-            <td><?= $order['products'] ?></td>
-            <td><?= $order['status'] ?></td>
+            <td><?= htmlspecialchars($order['id']) ?></td>
+            <td><?= htmlspecialchars($order['customer_id']) ?></td>
+            <td><?= htmlspecialchars($order['products']) ?></td>
+            <td><?= htmlspecialchars($order['status']) ?></td>
             <td>
-                <form method="POST" action="update_order.php">
-                    <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                <form method="POST" action="">
+                    <input type="hidden" name="order_id" value="<?= htmlspecialchars($order['id']) ?>">
                     <select name="status">
-                        <option value="new">Nowe</option>
-                        <option value="processing">W realizacji</option>
-                        <option value="completed">Zrealizowane</option>
-                        <option value="cancelled">Anulowane</option>
+                        <option value="new" <?= $order['status'] == 'new' ? 'selected' : '' ?>>Nowe</option>
+                        <option value="processing" <?= $order['status'] == 'processing' ? 'selected' : '' ?>>W realizacji</option>
+                        <option value="completed" <?= $order['status'] == 'completed' ? 'selected' : '' ?>>Zrealizowane</option>
+                        <option value="cancelled" <?= $order['status'] == 'cancelled' ? 'selected' : '' ?>>Anulowane</option>
                     </select>
                     <button type="submit">Zaktualizuj</button>
                 </form>
