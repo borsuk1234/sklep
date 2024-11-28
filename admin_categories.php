@@ -2,6 +2,11 @@
 require 'db_connection.php';
 require 'header.php';
 
+if (!(isset($_SESSION['is_admin']) && $_SESSION['is_admin'])) {
+    header('Location: login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $categoryId = isset($_POST['id']) ? intval($_POST['id']) : null;
