@@ -1,6 +1,10 @@
 <?php
 require 'db_connection.php';
 require 'header.php';
+if (!(isset($_SESSION['is_admin']) && $_SESSION['is_admin'])) {
+    header('Location: login.php');
+    exit();
+}
 
 if (isset($_GET['delete'])) {
     $productId = intval($_GET['delete']);
