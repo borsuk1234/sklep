@@ -1,7 +1,5 @@
 <?php
 require_once 'db_connection.php';
-
-
 // Pobierz listę kategorii
 $stmt = $pdo->query("SELECT * FROM categories");
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,23 +34,25 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require 'header.php';
 ?>
-
-    <main>
-        <aside>
-            <h2>Kategorie</h2>
-            <ul>
-                <li><a href="index.php">Wszystkie produkty</a></li>
+    <main >
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 0.5em; padding: 45px 15px; background-color: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 4em;">
+            <h1 style="margin: 0; text-align: center;">Kategorie</h1>
+            <div style="display: flex; flex-direction: row; gap: 1em;">
+                <a href="index.php">
+                    <button class="btn">Wszystkie produkty
+                    </button>
+                </a>
                 <?php foreach ($categories as $category): ?>
-                    <li>
-                        <a href="index.php?category_id=<?= htmlspecialchars($category['id']) ?>">
+                    <a href="index.php?category_id=<?= htmlspecialchars($category['id']) ?>">
+                        <button class="btn">
                             <?= htmlspecialchars($category['name']) ?>
-                        </a>
-                    </li>
+                        </button>
+                    </a>
                 <?php endforeach; ?>
-            </ul>
-        </aside>
+            </div>
+        </div>
         
-        <section>
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 1em; padding: 15px; background-color: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <h2>Produkty</h2>
             <?php if (!empty($products)): ?>
                 <div class="product-list">
@@ -72,7 +72,7 @@ require 'header.php';
             <?php else: ?>
                 <p>Brak produktów w tej kategorii.</p>
             <?php endif; ?>
-        </section>
+            </div>
     </main>
 
     <?php
