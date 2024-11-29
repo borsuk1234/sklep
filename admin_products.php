@@ -136,32 +136,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
       function editProduct(id) {
-    const productData = <?= json_encode($products); ?>;
-    const productCategoriesData = <?= json_encode($categories); ?>;
+        const productData = <?= json_encode($products); ?>;
+        const productCategoriesData = <?= json_encode($categories); ?>;
 
-    const product = productData.find(p => p.id === id);
+        const product = productData.find(p => Number(p.id) === id);
 
-    if (product) {
-        document.getElementById('product_id').value = product.id;
-        document.getElementById('name').value = product.name;
-        document.getElementById('description').value = product.description;
-        document.getElementById('price').value = product.price;
+        console.log(productData, id);
 
-        document.querySelectorAll('.category-checkbox').forEach(checkbox => checkbox.checked = false);
+        if (product) {
+            document.getElementById('product_id').value = product.id;
+            document.getElementById('name').value = product.name;
+            document.getElementById('description').value = product.description;
+            document.getElementById('price').value = product.price;
 
-        const productCategories = product.categories ? product.categories.split(', ') : [];
-        productCategories.forEach(categoryName => {
-            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-                const category = productCategoriesData.find(c => c.id == checkbox.value);
-                if (category && category.name === categoryName.trim()) {
-                    checkbox.checked = true;
-                }
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => checkbox.checked = false);
+
+            const productCategories = product.categories ? product.categories.split(', ') : [];
+            productCategories.forEach(categoryName => {
+                document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                    const category = productCategoriesData.find(c => c.name === categoryName.trim());
+                    if (category && checkbox.value == category.id) {
+                        checkbox.checked = true;
+                    }
+                });
             });
-        });
-    }
-}
-console.log(<?= json_encode($products, JSON_PRETTY_PRINT); ?>);
-
+        }
+      }
     </script>
 </body>
 </html>
