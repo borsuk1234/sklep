@@ -1,10 +1,9 @@
 <?php
 require_once 'db_connection.php';
-// Pobierz listę kategorii
+
 $stmt = $pdo->query("SELECT * FROM categories");
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Pobierz produkty na podstawie wybranej kategorii (jeśli podano)
 $categoryId = isset($_GET['category_id']) ? $_GET['category_id'] : null;
 if ($categoryId) {
     $stmt = $pdo->prepare("
@@ -27,7 +26,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sklep z zegarkami</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Plik CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <?php
