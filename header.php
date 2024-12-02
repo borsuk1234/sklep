@@ -1,17 +1,18 @@
 <?php
-session_start();
+require_once 'session.php';
+require 'db_connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sklep z zegarkami</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Plik CSS -->
+    <title>TickTock</title>
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
 <header>
-    <h1>Sklep z zegarkami</h1>
+    <h1>TickTock</h1>
     <nav>
         <ul>
             <li><a href="index.php">Strona główna</a></li>
