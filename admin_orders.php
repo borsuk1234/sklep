@@ -7,9 +7,9 @@ if (!(isset($_SESSION['is_admin']) && $_SESSION['is_admin'])) {
     exit();
 }
 
-// Handle the form submission for updating order status
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['status'])) {
-    // Prepare and execute the update statement
+   
     $stmt = $pdo->prepare("UPDATE orders SET status = :status WHERE id = :order_id");
     $stmt->bindParam(':status', $_POST['status'], PDO::PARAM_STR);
     $stmt->bindParam(':order_id', $_POST['order_id'], PDO::PARAM_INT);
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
     }
 }
 
-// Retrieve orders from the database
+
 $stmt = $pdo->prepare("SELECT * FROM orders");
 $stmt->execute();
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
