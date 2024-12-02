@@ -1,5 +1,7 @@
 <?php
+require_once 'session.php';
 require_once 'db_connection.php';
+require_once 'cart.php'; 
 
 $stmt = $pdo->query("SELECT * FROM categories");
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,6 +21,27 @@ if ($categoryId) {
     $stmt = $pdo->query("SELECT * FROM products");
 }
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
+    $productId = intval($_POST['product_id']);
+    if ($productId > 0) {
+        $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?? 0) + 1;
+        header("Location: index.php");
+        exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_from_cart'])) {
+    $productId = intval($_POST['product_id']);
+    if (isset($_SESSION['cart'][$productId])) {
+        unset($_SESSION['cart'][$productId]);
+    }
+    header("Location: index.php");
+    exit;
+}
+
+$cartItems = getCartItems($pdo); 
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -58,12 +81,16 @@ require 'header.php';
                     <?php foreach ($products as $product): ?>
                         <div class="product-item">
                             <img 
-                                src="<?= htmlspecialchars($product['image']) ?>" 
+                                src="<?= htmlspecialchars($product['image_path']) ?>" 
                                 alt="<?= htmlspecialchars($product['name']) ?>" 
                                 class="product-image">
                             <h3><?= htmlspecialchars($product['name']) ?></h3>
                             <p><?= htmlspecialchars($product['description']) ?></p>
                             <p><strong><?= number_format($product['price'], 2) ?> zł</strong></p>
+                            <form method="POST">
+                                <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                                <button type="submit" name="add_to_cart" class="btn">Dodaj do koszyka</button>
+                            </form>
                             <a href="product_details.php?id=<?= $product['id'] ?>" class="btn">Szczegóły</a>
                         </div>
                     <?php endforeach; ?>
@@ -71,7 +98,27 @@ require 'header.php';
             <?php else: ?>
                 <p>Brak produktów w tej kategorii.</p>
             <?php endif; ?>
-            </div>
+        </div>
+        <div class="cart-section">
+            <h2>Twój koszyk</h2>
+
+            <?php if (!empty($cartItems)): ?>
+                <ul class="cart-list">
+                    <?php foreach ($cartItems as $item): ?>
+                        <li class="cart-item">
+                            <span><?= htmlspecialchars($item['name']) ?> - <?= number_format($item['price'], 2) ?> zł</span>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="product_id" value="<?= $item['id'] ?>">
+                                <button type="submit" name="remove_from_cart" class="btn">Usuń</button>
+                            </form>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <p><strong>Suma: <?= number_format(getCartTotal($pdo), 2) ?> zł</strong></p>
+            <?php else: ?>
+                <p>Twój koszyk jest pusty.</p>
+            <?php endif; ?>
+        </div>
     </main>
 
     <?php
