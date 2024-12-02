@@ -15,7 +15,7 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-$products = $pdo->query("SELECT p.id, p.name, p.description, p.price, GROUP_CONCAT(c.name SEPARATOR ', ') as categories
+$products = $pdo->query("SELECT p.id, p.name, p.description, p.price, p.image_path, GROUP_CONCAT(c.name SEPARATOR ', ') as categories
                          FROM products p
                          LEFT JOIN product_categories pc ON p.id = pc.product_id
                          LEFT JOIN categories c ON pc.category_id = c.id
@@ -29,32 +29,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description']);
     $price = floatval($_POST['price']);
     $selectedCategories = $_POST['categories'] ?? [];
+    $imagePath = null;
+
+    if (!empty($_FILES['image']['name'])) {
+        $targetDir = "uploads/";
+        $fileName = basename($_FILES["image"]["name"]);
+        $targetFilePath = $targetDir . time() . "_" . $fileName;
+
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+        if (in_array($fileType, $allowedTypes) && move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
+            $imagePath = $targetFilePath;
+        } else {
+            echo "Invalid file type or upload error.";
+        }
+    }
 
     if (!empty($name) && $price > 0) {
         $pdo->beginTransaction();
         try {
             if ($productId) {
-                $stmt = $pdo->prepare("UPDATE products SET name = :name, description = :description, price = :price WHERE id = :id");
-                $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price, 'id' => $productId]);
-    
+                $stmt = $pdo->prepare("UPDATE products SET name = :name, description = :description, price = :price" . 
+                    ($imagePath ? ", image_path = :image_path" : "") . " WHERE id = :id");
+                $params = ['name' => $name, 'description' => $description, 'price' => $price, 'id' => $productId];
+                if ($imagePath) $params['image_path'] = $imagePath;
+                $stmt->execute($params);
+
                 $stmt = $pdo->prepare("DELETE FROM product_categories WHERE product_id = :product_id");
                 $stmt->execute(['product_id' => $productId]);
-    
+
                 foreach ($selectedCategories as $categoryId) {
                     $stmt = $pdo->prepare("INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)");
                     $stmt->execute(['product_id' => $productId, 'category_id' => $categoryId]);
                 }
             } else {
-                $stmt = $pdo->prepare("INSERT INTO products (name, description, price) VALUES (:name, :description, :price)");
-                $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price]);
+                $stmt = $pdo->prepare("INSERT INTO products (name, description, price, image_path) VALUES (:name, :description, :price, :image_path)");
+                $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price, 'image_path' => $imagePath]);
                 $newProductId = $pdo->lastInsertId();
-    
+
                 foreach ($selectedCategories as $categoryId) {
                     $stmt = $pdo->prepare("INSERT INTO product_categories (product_id, category_id) VALUES (:product_id, :category_id)");
                     $stmt->execute(['product_id' => $newProductId, 'category_id' => $categoryId]);
                 }
             }
-    
+
             $pdo->commit();
             $_SESSION['success_message'] = "Produkt został poprawnie zapisany.";
             header("Location: admin_products.php");
@@ -79,19 +98,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div style="width: 100%; display: flex; flex-direction: column; gap: 2em; align-items: center;">
         <h1>Zarządzanie produktami</h1>
 
-        <form method="POST" style="display: flex; flex-direction: column; gap: 1em;">
+        <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1em;">
             <div style="display: flex; flex-direction: row; gap: 1em;">
                 <div style="display: flex; flex-direction: column; gap: 1em; border: 1px solid black; border-radius: 1em; padding: 1em;">
                     <input type="hidden" name="product_id" id="product_id">
-                    <div style="display: flex; flex-direction: row; gap: 0.5em;">
-                        <label>Nazwa produktu: </label><input style="margin-left: auto;" type="text" name="name" id="name" required><br>          
+                    <div>
+                        <label>Nazwa produktu: </label>
+                        <input type="text" name="name" id="name" required>
                     </div>
-                    <div style="display: flex; flex-direction: row; gap: 0.5em;">
-                        <label>Opis produktu: </label><textarea style="width: 170px; height: 30px; resize: none; margin-left: auto;" name="description" id="description" required></textarea><br> 
+                    <div>
+                        <label>Opis produktu: </label>
+                        <textarea name="description" id="description" required></textarea>
                     </div>
-                    <div style="display: flex; flex-direction: row; gap: 0.5em;">
-                        <label>Cena: </label><input style="margin-left: auto;" type="number" step="0.01" name="price" id="price" required><br>
+                    <div>
+                        <label>Cena: </label>
+                        <input type="number" step="0.01" name="price" id="price" required>
                     </div>
+                    <div>
+                        <label>Obrazek produktu: </label>
+                        <input type="file" name="image" id="image">
+                    </div>
+                    <label>
+                        <input type="checkbox" name="clear_image" id="clear_image"> Usuń obraz
+                    </label>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.1em; border: 1px solid black; border-radius: 1em; padding: 1em;">
                     <label>Kategorie:</label><br>
@@ -103,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </div>
             </div>
-            <button type="submit" style="width: auto; margin: 0 auto; padding: 0.5em 2em; border-radius: 0.5em; background-color: #007BFF; color: white">Zapisz</button>
+            <button type="submit">Zapisz</button>
         </form>
 
         <h2>Lista produktów</h2>
@@ -111,8 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <tr>
                 <th>ID</th>
                 <th>Nazwa</th>
-                <th>Opis produktu</th>
+                <th>Opis</th>
                 <th>Cena</th>
+                <th>Obrazek</th>
                 <th>Kategorie</th>
                 <th>Akcje</th>
             </tr>
@@ -122,16 +152,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <td><?= htmlspecialchars($product['name']) ?></td>
                 <td><?= nl2br(htmlspecialchars($product['description'])) ?></td>
                 <td><?= number_format($product['price'], 2) ?> PLN</td>
+                <td>
+                    <?php if ($product['image_path']): ?>
+                        <img src="<?= $product['image_path'] ?>" alt="Product Image" width="100">
+                    <?php endif; ?>
+                </td>
                 <td><?= htmlspecialchars($product['categories']) ?></td>
                 <td>
                     <button onclick="editProduct(<?= $product['id'] ?>)">Edytuj</button>
-                    <a style="background-color:red; border-radius: 0.25em;" href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</a>
+                    <a href="admin_products.php?delete=<?= $product['id'] ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">Usuń</a>
                 </td>
             </tr>
             <?php endforeach; ?>
         </table>
 
-        <a href="admin_panel.php"><button class="nav-btn">Powrót do panelu</button></a>
+        <a href="admin_panel.php"><button>Powrót do panelu</button></a>
     </div>
 
     <script>
@@ -140,8 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const productCategoriesData = <?= json_encode($categories); ?>;
 
         const product = productData.find(p => Number(p.id) === id);
-
-        console.log(productData, id);
 
         if (product) {
             document.getElementById('product_id').value = product.id;
