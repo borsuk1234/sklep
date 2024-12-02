@@ -162,6 +162,40 @@ section h2 {
     font-size: 1em;
 }
 
+.cart-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item span {
+    font-size: 1.1em;
+}
+
+.cart-section p {
+    font-weight: bold;
+}
+
 .btn {
     display: inline-block;
     margin-top: 10px;
@@ -177,8 +211,6 @@ section h2 {
 .btn:hover {
     background-color: #0056b3;
 }
-
-
 
 footer {
     margin-top: auto;
