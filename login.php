@@ -1,33 +1,33 @@
 <?php
 require 'db_connection.php';
-require 'header.php'; // Połączenie z bazą danych
+require 'header.php'; 
 
-// Obsługa formularza logowania
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Sprawdź, czy podano dane logowania
+  
     if (empty($username) || empty($password)) {
         $error = "Podaj nazwę użytkownika i hasło.";
     } else {
-        // Pobierz użytkownika z bazy danych
+       
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
         $stmt->execute(['username' => $username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Sprawdź dane logowania
+      
         if ($user && password_verify($password, $user['password'])) {
-            // Ustawienie sesji użytkownika
+        
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            $_SESSION['is_admin'] = ($user['role'] === 'admin'); // Weryfikacja roli
+            $_SESSION['is_admin'] = ($user['role'] === 'admin'); 
 
-            // Przekierowanie po zalogowaniu
+            
             if ($user['role'] === 'admin') {
-                header('Location: admin_panel.php'); // Panel administratora
+                header('Location: admin_panel.php'); 
             } else {
-                header('Location: index.php'); // Strona główna dla użytkowników
+                header('Location: index.php'); 
             }
             exit();
         } else {
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             margin-bottom: 15px;
         }
-    </style> <!-- Plik CSS -->
+    </style> 
 </head>
 <body>
 <div class="form-container">
