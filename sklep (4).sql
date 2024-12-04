@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lis 28, 2024 at 02:33 PM
--- Wersja serwera: 10.4.28-MariaDB
--- Wersja PHP: 8.2.4
+-- Czas generowania: 04 Gru 2024, 13:53
+-- Wersja serwera: 10.4.17-MariaDB
+-- Wersja PHP: 8.0.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sklep`
+-- Baza danych: `sklep`
 --
 
 -- --------------------------------------------------------
@@ -30,10 +30,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `categories`
+-- Zrzut danych tabeli `categories`
 --
 
 INSERT INTO `categories` (`id`, `name`) VALUES
@@ -54,7 +54,7 @@ CREATE TABLE `customers` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `notes` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -64,19 +64,26 @@ CREATE TABLE `customers` (
 
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `phone` varchar(15) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `products` text NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `status` enum('new','processing','completed','cancelled') DEFAULT 'new',
+  `payment_method` enum('credit_card','paypal','bank_transfer') DEFAULT 'credit_card',
+  `delivery_date` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `orders`
+-- Zrzut danych tabeli `orders`
 --
 
-INSERT INTO `orders` (`id`, `customer_id`, `products`, `total_price`, `status`, `created_at`) VALUES
-(1, 1, 'sadsadsad', 242.00, 'completed', '2024-11-28 13:27:53');
+INSERT INTO `orders` (`id`, `first_name`, `last_name`, `address`, `phone`, `customer_id`, `products`, `total_price`, `status`, `payment_method`, `delivery_date`, `created_at`) VALUES
+(1, '', '', '', '', 1, 'sadsadsad', '242.00', 'completed', 'credit_card', NULL, '2024-11-28 13:27:53'),
+(2, 'Jan', 'Kowalski', 'ul. Polna 12, 00-123 Warszawa', '123456789', 1, 'Zegarek męski, Zegarek sportowy', '549.00', 'new', 'paypal', '2024-12-15', '2024-12-04 12:46:00');
 
 -- --------------------------------------------------------
 
@@ -89,7 +96,7 @@ CREATE TABLE `password_reset_tokens` (
   `user_id` int(11) NOT NULL,
   `token` varchar(255) NOT NULL,
   `expires_at` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -102,19 +109,19 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `image` varchar(255) DEFAULT 'default.png',
+  `image_path` varchar(255) DEFAULT 'uploads/default.png',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `products`
+-- Zrzut danych tabeli `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `created_at`) VALUES
-(2, 'Zegarek damski', 'sasd', 349.20, 'watch2.png', '2024-11-26 16:06:56'),
-(3, 'Zegarek sportowy', 'Zegarek sportowy', 299.00, 'watch3.png', '2024-11-26 16:06:56'),
-(7, 'Zegarek tommy', 'fajny sikorek', 1000.00, 'default.png', '2024-11-27 16:12:09'),
-(8, 'sikor', 'zloty sikor', 200000.02, 'default.png', '2024-11-27 16:12:28');
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `image_path`, `created_at`) VALUES
+(2, 'Zegarek damski', 'sasd', '349.20', 'watch2.png', '2024-11-26 16:06:56'),
+(3, 'Zegarek sportowy', 'Zegarek sportowy', '299.00', 'watch3.png', '2024-11-26 16:06:56'),
+(7, 'Zegarek tommy', 'fajny sikorek', '1000.00', 'tommy.png', '2024-11-27 16:12:09'),
+(8, 'sikor', 'zloty sikor', '200000.02', 'sikor.png', '2024-11-27 16:12:28');
 
 -- --------------------------------------------------------
 
@@ -126,10 +133,10 @@ CREATE TABLE `product_categories` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `product_categories`
+-- Zrzut danych tabeli `product_categories`
 --
 
 INSERT INTO `product_categories` (`id`, `product_id`, `category_id`) VALUES
@@ -151,7 +158,7 @@ INSERT INTO `product_categories` (`id`, `product_id`, `category_id`) VALUES
 CREATE TABLE `product_parameters` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -163,19 +170,23 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('user','admin') DEFAULT 'user'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `role` enum('user','admin','employee') DEFAULT 'user'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `users`
+-- Zrzut danych tabeli `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (1, 'admin', '$2y$10$qNm9UmX5qkOTMNIztFgw8.f6lQttfdhjO2FKTKyWs0.Qq7GQE6Ii.', 'admin'),
-(2, 'dawud', '$2y$10$1uRMCsyrvOd6votSvfIY..F3/0FvpbeXM5sn777qmzD31zHw0/fR.', 'user'),
-(3, 'cos', '$2y$10$eHMa60LchVheV8XQQbkfHufySdkAd6T6TPBYm.AvDmFcxy5oIgR2S', 'user'),
+(2, 'szmata', '$2y$10$1uRMCsyrvOd6votSvfIY..F3/0FvpbeXM5sn777qmzD31zHw0/fR.', 'employee'),
+(3, 'cos', '$2y$10$eHMa60LchVheV8XQQbkfHufySdkAd6T6TPBYm.AvDmFcxy5oIgR2S', 'employee'),
 (6, 'ktos', '$2y$10$47nn013UMdcbmMDC6X7ypeBDTTXHV5CKXdzOlw7mTiXY/xFmwiDHK', 'user'),
-(7, 'natan', '$2y$10$ll60xTFMIWcK4GaJqpOI4ORib4RN9UbyO9ZI/hk2AkPBtgu8nVofe', 'user');
+(12, 'bambo', '$2y$10$GsdNDkrEk3wkdwxOPdLy4OTQeTxCFj.6RLIZ90qhIa2.MI1eJ/kKK', 'user'),
+(16, 'kuba', '$2y$10$j3J.2ht5ll8xwje0Sdx7iuNwaJP3nnHy4T7VXYJfdx8tGI6N2dymW', 'user'),
+(30, 'jaca', '$2y$10$gitcOaPNjFbpKiY4SEdzTerXdGS8CiHlkUdVTIqC7xmhnI/ECZONW', 'employee'),
+(31, 'bosuk', '$2y$10$aqhOZVBlYbpQwExIyI3S4e/n95d44neaBIlnjJvN6PmOEUI1mY2G6', 'user'),
+(32, 'siema', '$2y$10$JpPYaNECkGvlQXIuwnVlZOIyFXWVJ5Ab09bsL1Z/QIOn6aTZR.O4q', 'user');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -237,69 +248,69 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT dla zrzuconych tabel
 --
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT dla tabeli `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `customers`
+-- AUTO_INCREMENT dla tabeli `customers`
 --
 ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT dla tabeli `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `password_reset_tokens`
+-- AUTO_INCREMENT dla tabeli `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT dla tabeli `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `product_categories`
+-- AUTO_INCREMENT dla tabeli `product_categories`
 --
 ALTER TABLE `product_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- AUTO_INCREMENT for table `product_parameters`
+-- AUTO_INCREMENT dla tabeli `product_parameters`
 --
 ALTER TABLE `product_parameters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
--- Constraints for dumped tables
+-- Ograniczenia dla zrzutów tabel
 --
 
 --
--- Constraints for table `password_reset_tokens`
+-- Ograniczenia dla tabeli `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
   ADD CONSTRAINT `password_reset_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `product_categories`
+-- Ograniczenia dla tabeli `product_categories`
 --
 ALTER TABLE `product_categories`
   ADD CONSTRAINT `product_categories_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
