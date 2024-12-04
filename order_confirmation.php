@@ -6,10 +6,8 @@ require 'header.php';
 
 $totalAmount = getCartTotal($pdo);
 
-// Pobieramy metodę płatności z sesji
 $paymentMethod = $_SESSION['payment_method'] ?? '';
 
-// Wyświetlamy różne formularze w zależności od wybranej metody płatności
 ?>
 <!DOCTYPE html>
 <html lang="pl">
