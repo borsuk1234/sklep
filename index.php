@@ -100,29 +100,31 @@ require 'header.php';
             <?php endif; ?>
         </div>
         <div class="cart-section">
-            <h2>Twój koszyk</h2>
+    <h2>Twój koszyk</h2>
 
-            <?php if (!empty($cartItems)): ?>
-                <ul class="cart-list">
-                    <?php foreach ($cartItems as $item): ?>
-                        <li class="cart-item">
-                            <span><?= htmlspecialchars($item['name']) ?> - <?= number_format($item['price'], 2) ?> zł</span>
-                            <form method="POST" style="display: inline;">
-                                <input type="hidden" name="product_id" value="<?= $item['id'] ?>">
-                                <button type="submit" name="remove_from_cart" class="btn">Usuń</button>
-                            </form>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-                <p><strong>Suma: <?= number_format(getCartTotal($pdo), 2) ?> zł</strong></p>
-            <?php else: ?>
-                <p>Twój koszyk jest pusty.</p>
-            <?php endif; ?>
-        </div>
+    <?php if (!empty($cartItems)): ?>
+        <ul class="cart-list">
+            <?php foreach ($cartItems as $item): ?>
+                <li class="cart-item">
+                    <span><?= htmlspecialchars($item['name']) ?> - <?= number_format($item['price'], 2) ?> zł</span>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="product_id" value="<?= $item['id'] ?>">
+                        <button type="submit" name="remove_from_cart" class="btn">Usuń</button>
+                    </form>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <p><strong>Suma: <?= number_format(getCartTotal($pdo), 2) ?> zł</strong></p>
+
+        <a href="order.php" class="btn">Złóż zamówienie</a>
+
+    <?php else: ?>
+        <p>Twój koszyk jest pusty.</p>
+    <?php endif; ?>
+</div>
     </main>
 
-    <?php
-
+<?php
 require 'footer.php';
 ?>
 </body>

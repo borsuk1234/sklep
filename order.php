@@ -1,74 +1,197 @@
 <?php
-session_start();
+require_once 'session.php';
+require_once 'db_connection.php';
+require_once 'cart.php'; 
+require 'header.php';
 
-if (empty($_SESSION['cart'])) {
-    header("Location: index.php");
+$totalAmount = getCartTotal($pdo);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
+    $_SESSION['payment_method'] = $_POST['payment_method'];
+    header("Location: order_confirmation.php");
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $surname = $_POST['surname'];
-    $address = $_POST['address'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $payment_method = $_POST['payment_method']; 
-
-    if (empty($name) || empty($surname) || empty($address) || empty($phone) || empty($email)) {
-        $error = "Wszystkie pola są wymagane!";
-    } else {
-        $order_id = saveOrder($name, $surname, $address, $phone, $email, $payment_method);
-
-        header("Location: confirmation.php?order_id=$order_id");
-        exit;
-    }
-}
-
-function saveOrder($name, $surname, $address, $phone, $email, $payment_method) {
-    $pdo = new PDO('mysql:host=localhost;dbname=sklep', 'root', '');
-
-    $stmt = $pdo->prepare("INSERT INTO orders (name, surname, address, phone, email, payment_method) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$name, $surname, $address, $phone, $email, $payment_method]);
-
-    return $pdo->lastInsertId();
-}
+$cartItems = getCartItems($pdo);
 ?>
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Składanie zamówienia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podsumowanie zamówienia</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>Formularz zamówienia</h2>
+    <div class="container">
+        <h1>Podsumowanie zamówienia</h1>
+        <div class="cart-summary">
+            <h3>Twoje produkty:</h3>
+            <ul>
+                <?php if (!empty($cartItems)): ?>
+                    <?php foreach ($cartItems as $item): ?>
+                        <li><?= htmlspecialchars($item['name']) ?> - <?= number_format($item['price'], 2) ?> zł</li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li>Twój koszyk jest pusty.</li>
+                <?php endif; ?>
+            </ul>
+        </div>
+        <div class="total-amount">
+            <p>Kwota do zapłacenia: <?= number_format($totalAmount, 2) ?> zł</p>
+        </div>
+        <form method="POST">
+            <div class="form-group">
+                <label for="first_name">Imię:</label>
+                <input type="text" name="first_name" id="first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Nazwisko:</label>
+                <input type="text" name="last_name" id="last_name" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Adres:</label>
+                <input type="text" name="address" id="address" required>
+            </div>
+            <div class="form-group">
+                <label for="postal_code">Kod pocztowy:</label>
+                <input type="text" name="postal_code" id="postal_code" required>
+            </div>
+            <div class="form-group">
+                <label for="city">Miejscowość:</label>
+                <input type="text" name="city" id="city" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Numer telefonu:</label>
+                <input type="tel" name="phone_number" id="phone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Adres e-mail:</label>
+                <input type="email" name="email" id="email" required>
+            </div>
 
-    <?php if (!empty($error)) { echo "<p style='color:red;'>$error</p>"; } ?>
+            <div class="payment-method">
+                 <h3>Wybierz metodę płatności</h3>
+                    <select name="payment_method" id="payment_method" class="payment-method-select">
+                        <option value="card">Płatność kartą</option>
+                        <option value="blik">Płatność BLIK</option>
+                        <option value="paypal">Płatność PayPal</option>
+                    </select>
+            </div>
 
-    <form method="post">
-        <label for="name">Imię:</label>
-        <input type="text" name="name" id="name" required><br>
+            <button type="submit" name="place_order" class="btn">Złóż zamówienie</button>
+        </form>
+    </div>
 
-        <label for="surname">Nazwisko:</label>
-        <input type="text" name="surname" id="surname" required><br>
+    <style>
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
 
-        <label for="address">Adres:</label>
-        <textarea name="address" id="address" required></textarea><br>
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
 
-        <label for="phone">Numer telefonu:</label>
-        <input type="tel" name="phone" id="phone" required><br>
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-        <label for="email">E-mail:</label>
-        <input type="email" name="email" id="email" required><br>
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-        <label for="payment_method">Wybierz metodę płatności:</label>
-        <select name="payment_method" id="payment_method" required>
-            <option value="credit_card">Karta kredytowa</option>
-            <option value="paypal">PayPal</option>
-            <option value="bank_transfer">Przelew bankowy</option>
-        </select><br>
+        input[type="text"], input[type="tel"], input[type="email"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
 
-        <button type="submit">Potwierdź zamówienie</button>
-    </form>
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+        }
+
+        p a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message, .success-message {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        .payment-method {
+            margin-top: 20px;
+        }
+
+        .payment-method label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .payment-method-select:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .payment-method-select option {
+            padding: 10px;
+        }
+     </style>
+
 </body>
 </html>
+
+<?php require 'footer.php'; ?>
