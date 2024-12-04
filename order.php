@@ -8,6 +8,15 @@ $totalAmount = getCartTotal($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
     $_SESSION['payment_method'] = $_POST['payment_method'];
+    $_SESSION['user_data'] = [
+        'first_name' => $_POST['first_name'],
+        'last_name' => $_POST['last_name'],
+        'address' => $_POST['address'],
+        'postal_code' => $_POST['postal_code'],
+        'city' => $_POST['city'],
+        'phone' => $_POST['phone'],
+        'email' => $_POST['email']
+    ];
     header("Location: order_confirmation.php");
     exit;
 }
@@ -62,8 +71,8 @@ $cartItems = getCartItems($pdo);
                 <input type="text" name="city" id="city" required>
             </div>
             <div class="form-group">
-                <label for="phone_number">Numer telefonu:</label>
-                <input type="tel" name="phone_number" id="phone_number" required>
+                <label for="phone">Numer telefonu:</label>
+                <input type="tel" name="phone" id="phone" required>
             </div>
             <div class="form-group">
                 <label for="email">Adres e-mail:</label>

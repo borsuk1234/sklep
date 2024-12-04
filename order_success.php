@@ -4,29 +4,23 @@ require_once 'db_connection.php';
 require_once 'cart.php'; 
 require 'header.php';
 
-// Włącz wyświetlanie błędów
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Pobieramy dane o zamówieniu i metodzie płatności z sesji
-$totalAmount = getCartTotal($pdo);
-$paymentMethod = $_SESSION['payment_method'] ?? '';
-$customerId = $_SESSION['customer_id'] ?? 0; // Zakładam, że customer_id jest przechowywane w sesji
-$products = getCartItems($pdo); // Pobierz produkty z koszyka
+if (!isset($_SESSION['user_data']) || !isset($_SESSION['payment_method'])) {
+    header("Location: order.php");
+    exit;
+}
 
-// Zbieramy dane o użytkowniku z formularza
-$userData = [
-    'first_name' => $_POST['first_name'] ?? '',
-    'last_name' => $_POST['last_name'] ?? '',
-    'address' => $_POST['address'] ?? '',
-    'phone' => $_POST['phone'] ?? '',
-    'email' => $_POST['email'] ?? ''
-];
+$userData = $_SESSION['user_data'];
+$paymentMethod = $_SESSION['payment_method'];
+$totalAmount = getCartTotal($pdo);
+$customerId = $_SESSION['customer_id'] ?? 0;
+$products = getCartItems($pdo);
 
 $orderSuccess = false;
 $errorMessage = '';
 
-// Dodajemy zamówienie do bazy danych
 try {
     $pdo->beginTransaction();
 
@@ -44,30 +38,21 @@ try {
         ':payment_method' => $paymentMethod
     ]);
 
-    // Pobieramy ID ostatniego zamówienia
     $orderId = $pdo->lastInsertId();
 
-    // Logowanie ID zamówienia
     error_log("Nowe zamówienie utworzone, ID: $orderId");
-
-    // Usuwamy produkty z koszyka po złożeniu zamówienia na podstawie session_id
     $stmt = $pdo->prepare("DELETE FROM cart WHERE session_id = ?");
     $stmt->execute([session_id()]);
 
-    // Potwierdzamy transakcję
     $pdo->commit();
 
-    // Ustawiamy flagę sukcesu
     $orderSuccess = true;
 } catch (Exception $e) {
-    // Rzucenie błędu jeśli coś poszło nie tak
     $pdo->rollBack();
 
-    // Logowanie szczegółów błędu
     error_log("Błąd podczas składania zamówienia: " . $e->getMessage());
     error_log("Śledzenie błędu: " . $e->getTraceAsString());
 
-    // Komunikat dla użytkownika
     $errorMessage = "Wystąpił błąd podczas składania zamówienia. Proszę spróbować ponownie.";
 }
 ?>

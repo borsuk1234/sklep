@@ -53,7 +53,12 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <tr>
             <th>ID</th>
             <th>Klient</th>
+            <th>Imie</th>
+            <th>Nazwisko</th>
+            <th>Adres</th>
+            <th>Telefon</th>
             <th>Produkty</th>
+            <th>Kwota do zapłaty</th>
             <th>Status</th>
             <th>Akcja</th>
         </tr>
@@ -61,7 +66,12 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <tr>
             <td><?= htmlspecialchars($order['id']) ?></td>
             <td><?= htmlspecialchars($order['customer_id']) ?></td>
+            <td><?= htmlspecialchars($order['first_name']) ?></td>
+            <td><?= htmlspecialchars($order['last_name']) ?></td>
+            <td><?= htmlspecialchars($order['address']) ?></td>
+            <td><?= htmlspecialchars($order['phone']) ?></td>
             <td><?= htmlspecialchars($order['products']) ?></td>
+            <td><?= htmlspecialchars($order['total_price']) ?></td>
             <td><?= htmlspecialchars($order['status']) ?></td>
             <td>
                 <form method="POST" action="">
