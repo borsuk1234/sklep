@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2024 at 09:37 PM
--- Wersja serwera: 10.4.32-MariaDB
--- Wersja PHP: 8.2.12
+-- Generation Time: Lis 28, 2024 at 02:33 PM
+-- Wersja serwera: 10.4.28-MariaDB
+-- Wersja PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -102,7 +102,7 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `image_path` varchar(255) DEFAULT 'uploads/default.png',
+  `image` varchar(255) DEFAULT 'default.png',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -110,11 +110,11 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `image_path`, `created_at`) VALUES
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `created_at`) VALUES
 (2, 'Zegarek damski', 'sasd', 349.20, 'watch2.png', '2024-11-26 16:06:56'),
 (3, 'Zegarek sportowy', 'Zegarek sportowy', 299.00, 'watch3.png', '2024-11-26 16:06:56'),
-(7, 'Zegarek tommy', 'fajny sikorek', 1000.00, 'tommy.png', '2024-11-27 16:12:09'),
-(8, 'sikor', 'zloty sikor', 200000.02, 'sikor.png', '2024-11-27 16:12:28');
+(7, 'Zegarek tommy', 'fajny sikorek', 1000.00, 'default.png', '2024-11-27 16:12:09'),
+(8, 'sikor', 'zloty sikor', 200000.02, 'default.png', '2024-11-27 16:12:28');
 
 -- --------------------------------------------------------
 
@@ -163,7 +163,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('user','admin','employee') DEFAULT 'user'
+  `role` enum('user','admin') DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -172,16 +172,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (1, 'admin', '$2y$10$qNm9UmX5qkOTMNIztFgw8.f6lQttfdhjO2FKTKyWs0.Qq7GQE6Ii.', 'admin'),
-(2, 'szmata', '$2y$10$1uRMCsyrvOd6votSvfIY..F3/0FvpbeXM5sn777qmzD31zHw0/fR.', 'employee'),
-(3, 'cos', '$2y$10$eHMa60LchVheV8XQQbkfHufySdkAd6T6TPBYm.AvDmFcxy5oIgR2S', 'employee'),
+(2, 'dawud', '$2y$10$1uRMCsyrvOd6votSvfIY..F3/0FvpbeXM5sn777qmzD31zHw0/fR.', 'user'),
+(3, 'cos', '$2y$10$eHMa60LchVheV8XQQbkfHufySdkAd6T6TPBYm.AvDmFcxy5oIgR2S', 'user'),
 (6, 'ktos', '$2y$10$47nn013UMdcbmMDC6X7ypeBDTTXHV5CKXdzOlw7mTiXY/xFmwiDHK', 'user'),
-(12, 'bambo', '$2y$10$GsdNDkrEk3wkdwxOPdLy4OTQeTxCFj.6RLIZ90qhIa2.MI1eJ/kKK', 'user'),
-(16, 'kuba', '$2y$10$j3J.2ht5ll8xwje0Sdx7iuNwaJP3nnHy4T7VXYJfdx8tGI6N2dymW', 'user'),
-(30, 'jaca', '$2y$10$gitcOaPNjFbpKiY4SEdzTerXdGS8CiHlkUdVTIqC7xmhnI/ECZONW', 'employee'),
-(31, 'bosuk', '$2y$10$aqhOZVBlYbpQwExIyI3S4e/n95d44neaBIlnjJvN6PmOEUI1mY2G6', 'user'),
-(32, 'siema', '$2y$10$JpPYaNECkGvlQXIuwnVlZOIyFXWVJ5Ab09bsL1Z/QIOn6aTZR.O4q', 'user'),
-(33, 'admin123', '$2y$10$DH8oaaQ8nnNCrhVE6w71Xu0On.pQ6mb8jQ.MGw8Jv9NoFs4wjzRse', 'admin'),
-(34, 'siema123', '$2y$10$MOalBUv.EdaAe8IfIvet9.m1I6NBjYDUIGNmwIjdzjyEPrtNzxmei', 'user');
+(7, 'natan', '$2y$10$ll60xTFMIWcK4GaJqpOI4ORib4RN9UbyO9ZI/hk2AkPBtgu8nVofe', 'user');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -250,7 +244,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `customers`
@@ -274,13 +268,13 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
 --
 ALTER TABLE `product_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `product_parameters`
@@ -292,7 +286,7 @@ ALTER TABLE `product_parameters`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

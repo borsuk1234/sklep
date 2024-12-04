@@ -1,8 +1,8 @@
 <?php
-$host = 'mysql.ct8.pl';
-$dbname = 'm50640_sklep';
-$username = 'm50640_sklep';
-$password = 'JacekSwider123@';
+$host = 'localhost';
+$dbname = 'sklep';
+$username = 'root';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

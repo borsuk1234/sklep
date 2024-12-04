@@ -1,27 +1,28 @@
 <?php
-require 'db_connection.php';
-require 'header.php';
+require_once 'db_connection.php';
+if (isset($_GET['id'])) {
+    $productId = $_GET['id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $role = 'user';
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = :id");
+    $stmt->execute(['id' => $productId]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (empty($username) || empty($password)) {
-        $error = "Podaj nazwę użytkownika i hasło.";
-    } else {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->execute(['username' => $username]);
-        if ($stmt->fetch()) {
-            $error = "Nazwa użytkownika jest już zajęta.";
-        } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (:username, :password, :role)");
-            $stmt->execute(['username' => $username, 'password' => $hashedPassword, 'role' => $role]);
-
-            $success = "Rejestracja zakończona sukcesem! Możesz się teraz zalogować.";
-        }
+    if (!$product) {
+        header('Location: index.php');
+        exit;
     }
+
+    $stmt = $pdo->prepare("
+        SELECT c.name 
+        FROM categories c
+        JOIN product_categories pc ON c.id = pc.category_id
+        WHERE pc.product_id = :product_id
+    ");
+    $stmt->execute(['product_id' => $productId]);
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    header('Location: index.php');
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -29,106 +30,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rejestracja</title>
-    <style>
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 32px;
-        }
-
-        .form-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-        input[type="text"], input[type="password"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            text-align: center;
-            color: #555;
-        }
-
-        p a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-
-        p a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message, .success-message {
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .error-message {
-            color: red;
-        }
-
-        .success-message {
-            color: green;
-        }
-    </style>
+    <title>Detal produktu - <?= htmlspecialchars($product['name']) ?></title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="form-container">
-        <h2>Rejestracja</h2>
-        <?php if (!empty($error)): ?>
-            <p class="error-message"><?= htmlspecialchars($error) ?></p>
-        <?php endif; ?>
-        <?php if (!empty($success)): ?>
-            <p class="success-message"><?= htmlspecialchars($success) ?></p>
-        <?php endif; ?>
-        <form method="POST" action="register.php">
-            <label for="username">Nazwa użytkownika:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="password">Hasło:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Zarejestruj się</button>
-        </form>
-        <p>Masz już konto? <a href="login.php">Zaloguj się</a></p>
-    </div>
+    <?php require 'header.php'; ?>
+
+    <main>
+        <div style="padding: 45px 15px; background-color: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 4em;">
+            <h1 style="text-align: center;">Szczegóły produktu</h1>
+            <div style="display: flex; flex-direction: row; gap: 2em; justify-content: center; align-items: center;">
+                <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="product-image" style="max-width: 300px;">
+                <div>
+                    <h2><?= htmlspecialchars($product['name']) ?></h2>
+                    <p><strong>Cena:</strong> <?= number_format($product['price'], 2) ?> zł</p>
+                    <p><strong>Opis:</strong> <?= nl2br(htmlspecialchars($product['description'])) ?></p>
+
+                    <h3>Kategorie:</h3>
+                    <ul>
+                        <?php foreach ($categories as $category): ?>
+                            <li><?= htmlspecialchars($category['name']) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+
+                    <a href="index.php" class="btn">Powrót do sklepu</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <?php require 'footer.php'; ?>
 </body>
 </html>
-<?php
-require 'footer.php';
-?>
