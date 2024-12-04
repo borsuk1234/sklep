@@ -1,0 +1,28 @@
+Opis funkcjonalności sklepu internetowego Sklep-Boro
+1. Strona główna
+Wyświetla produkty wraz z nazwą, ceną i miniaturą zdjęcia.
+Możliwość przejścia do szczegółów produktu lub dodania go bezpośrednio do koszyka.
+Nawigacja do różnych kategorii produktów.
+
+2. Nawigacja
+Główne menu umożliwia przejście do kategorii: Zegarki damskie, Zegarki dziecięce, Zegarki męskie i Zegarki sportowe.
+Linki do rejestracji, logowania oraz zarządzania kontem.
+
+3. Szczegóły produktu
+Opis produktu, jego cena oraz możliwość dodania do koszyka.
+
+4. Koszyk
+Zawiera listę dodanych produktów wraz z ich ceną jednostkową, liczbą sztuk i łączną kwotą.
+Możliwość edytowania liczby sztuk lub usunięcia produktów z koszyka.
+Przycisk do przejścia do realizacji zamówienia.
+
+5. Rejestracja i logowanie
+Formularze rejestracji dla nowych użytkowników wymagają podania danych osobowych (np. imię, e-mail, hasło).
+Panel logowania umożliwia dostęp do konta użytkownika.
+
+6. Proces zakupowy
+Użytkownik po zalogowaniu wybiera produkty, dodaje je do koszyka, a następnie przechodzi do finalizacji zamówienia.
+Możliwość wyboru formy płatności.
+
+
+
