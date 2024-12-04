@@ -40,7 +40,7 @@ if (isset($_GET['id'])) {
         <div style="padding: 45px 15px; background-color: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 4em;">
             <h1 style="text-align: center;">Szczegóły produktu</h1>
             <div style="display: flex; flex-direction: row; gap: 2em; justify-content: center; align-items: center;">
-                <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="product-image" style="max-width: 300px;">
+                <img src="<?= htmlspecialchars($product['image_path']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="product-image" style="max-width: 300px;">
                 <div>
                     <h2><?= htmlspecialchars($product['name']) ?></h2>
                     <p><strong>Cena:</strong> <?= number_format($product['price'], 2) ?> zł</p>
