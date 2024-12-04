@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2024 at 05:39 PM
--- Wersja serwera: 10.4.28-MariaDB
--- Wersja PHP: 8.2.4
+-- Generation Time: Dec 04, 2024 at 10:27 PM
+-- Wersja serwera: 10.4.32-MariaDB
+-- Wersja PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sklep`
+-- Database: `siema`
 --
 
 -- --------------------------------------------------------
@@ -143,7 +143,9 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `image_path`, `cre
 (2, 'Zegarek damski', 'sasd', 349.20, 'watch2.png', '2024-11-26 16:06:56'),
 (3, 'Zegarek sportowy', 'Zegarek sportowy', 299.00, 'watch3.png', '2024-11-26 16:06:56'),
 (7, 'Zegarek tommy', 'fajny sikorek', 1000.00, 'tommy.png', '2024-11-27 16:12:09'),
-(8, 'sikor', 'zloty sikor', 200000.02, 'sikor.png', '2024-11-27 16:12:28');
+(8, 'sikor', 'zloty sikor', 200000.02, 'sikor.png', '2024-11-27 16:12:28'),
+(17, 'zegarek ciemny', 'bardzo czarny', 200.00, 'elo.png', '2024-12-04 21:23:32'),
+(18, 'drogi', 'mega drogi zegarek ', 1000000.00, 'elko.png', '2024-12-04 21:24:51');
 
 -- --------------------------------------------------------
 
@@ -316,7 +318,7 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
