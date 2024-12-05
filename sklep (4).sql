@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2024 at 10:27 PM
--- Wersja serwera: 10.4.32-MariaDB
--- Wersja PHP: 8.2.12
+-- Generation Time: Dec 05, 2024 at 11:55 AM
+-- Wersja serwera: 10.4.28-MariaDB
+-- Wersja PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `siema`
+-- Database: `elo`
 --
 
 -- --------------------------------------------------------
@@ -145,7 +145,16 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `image_path`, `cre
 (7, 'Zegarek tommy', 'fajny sikorek', 1000.00, 'tommy.png', '2024-11-27 16:12:09'),
 (8, 'sikor', 'zloty sikor', 200000.02, 'sikor.png', '2024-11-27 16:12:28'),
 (17, 'zegarek ciemny', 'bardzo czarny', 200.00, 'elo.png', '2024-12-04 21:23:32'),
-(18, 'drogi', 'mega drogi zegarek ', 1000000.00, 'elko.png', '2024-12-04 21:24:51');
+(18, 'drogi', 'mega drogi zegarek ', 1000000.00, 'elko.png', '2024-12-04 21:24:51'),
+(19, 'brydki', 'tak', 2.00, '1.png', '2024-12-05 10:53:03'),
+(20, 'elo', 'sasasas', 300.00, '2.png', '2024-12-05 10:53:39'),
+(21, 'siema', 'asasasa', 2.00, '3.png', '2024-12-05 10:54:11'),
+(22, 'asasan', 'asasasas', 30000.00, '4.png', '2024-12-05 10:54:11'),
+(23, 'aoksap[s', '12121212', 12222.00, '5.png', '2024-12-05 10:54:45'),
+(24, 'asasasa', 'sasasasa', 12114121.00, '6.png', '2024-12-05 10:54:45'),
+(25, 'asasa', 'sha9a9hduun', 9891.00, '7.png', '2024-12-05 10:55:20'),
+(26, 'pa', 'asasaad', 872121.00, '8.png', '2024-12-05 10:55:20'),
+(27, 'asoijasas', 'asasasas', 6000.00, '9.png', '2024-12-05 10:55:34');
 
 -- --------------------------------------------------------
 
@@ -318,7 +327,7 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
